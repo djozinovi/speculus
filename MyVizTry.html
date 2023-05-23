@@ -36,16 +36,14 @@
         }
     </style>
     <script>
-        var currentDate = 1;
-        var currentSubdirectory = "ILULI";
 
-        
         function selectImage() {
+            var day = document.getElementById("day").value;
             var month = document.getElementById("month").value;
-            var date = currentDate.toString();
-            var subdirectory = currentSubdirectory;
+            var year = document.getElementById("year").value;
+            var channel = document.getElementById("channel").value;
 
-            var imagePath = subdirectory + "/" + month + "/" + date + ".png";
+            var imagePath = "./" + year + "/" + month + "/" + day + "/" + channel + ".spec.png";
             var image = document.getElementById("selectedImage");
             var noImageText = document.getElementById("noImageText");
             var imageInfo = document.getElementById("imageInfo");
@@ -58,34 +56,35 @@
 
             image.style.display = "block";
             noImageText.style.display = "none";
-            imageInfo.innerHTML = "Station: " + subdirectory + " | Month: " + month + " | Day: " + date;
-
-            document.getElementById("date").value = currentDate;
+            imageInfo.innerHTML = "Station: " + channel + " | Year: " + year + " | Month: " + month + " | Day: " + day;
+            
         }
 
         function handleKeyPress(event) {
             if (event.keyCode === 37) { // Left arrow key
-                currentDate = Math.max(currentDate - 1, 1); // Decrease date, minimum 1
+		var day = Math.max( Number(document.getElementById("day").value) - 1, 1) ; // Decrease date, minimum 1
+                document.getElementById("day").value = day ;
                 selectImage();
             } else if (event.keyCode === 39) { // Right arrow key
-                currentDate = Math.min(currentDate + 1, 31); // Increase date, maximum 31
+		var day = Math.min( Number(document.getElementById("day").value) + 1, 31) ; // Increase date, maximum 31
+                document.getElementById("day").value = day ; 
                 selectImage();
             } else if (event.keyCode === 38) { // Up arrow key
-                changeSubdirectory(-1); // Move to the previous subdirectory
+                changeChannel(-1); // Move to the previous channel
                 selectImage();
             } else if (event.keyCode === 40) { // Down arrow key
-                changeSubdirectory(1); // Move to the next subdirectory
+                changeChannel(1); // Move to the next channel
                 selectImage();
             }
             
         }
 
 
-        function changeSubdirectory(direction) {
-            var subdirectorySelect = document.getElementById("subdirectory");
-            var selectedIndex = subdirectorySelect.selectedIndex;
+        function changeChannel(direction) {
+            var channelSelect = document.getElementById("channel");
+            var selectedIndex = channelSelect.selectedIndex;
             var newIndex = selectedIndex + direction;
-            var optionsCount = subdirectorySelect.options.length;
+            var optionsCount = channelSelect.options.length;
 
             if (newIndex < 0) {
                 newIndex = optionsCount - 1; // Wrap to the last option
@@ -93,8 +92,8 @@
                 newIndex = 0; // Wrap to the first option
             }
 
-            subdirectorySelect.selectedIndex = newIndex;
-            currentSubdirectory = subdirectorySelect.value;
+            channelSelect.selectedIndex = newIndex;
+            currentChannel = channelSelect.value;
         }
         
         function setDefaultImage() {
@@ -109,26 +108,36 @@
 <body>
   <div id="container">
         <div id="leftPanel">
-            <label for="subdirectory">Station:</label>
-            <select id="subdirectory">
-                <option value="ILULI">ILULI</option>
-                <option value="KULLO">KULLO</option>
-                <option value="KARAT">KARAT</option>
-                <option value="NIAQ">NIAQ</option>
-                <option value="SAATT">SAATT</option>
-                <!-- Add more subdirectories here -->
+            <label for="channel">Channel:</label>
+            <select id="channel">
+                <option value="9S.BRIZ1..EHZ">9S.BRIZ1..EHZ</option>
+                <option value="9S.BRIZ2..EHZ">9S.BRIZ2..EHZ</option>
+		<option selected="9S.BRIZ1..EHZ">9S.BRIZ1..EHZ</option>
+                <!-- Add more channels here -->
             </select>
+            <br>
+            <label for="year">Year:</label>
+            <input type="number" id="year" min="1970" max="2070" value="2023">
             <br>
             <label for="month">Month:</label>
             <select id="month">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
                 <option value="9">September</option>
                 <option value="10">October</option>
                 <option value="11">November</option>
-                <!-- Add more months here -->
+                <option value="12">December</option>
+		<option selected="5">5</option>
             </select>
             <br>
-            <label for="date">Date:</label>
-            <input type="number" id="date" min="1" max="31">
+            <label for="day">Day:</label>
+            <input type="number" id="day" min="1" max="31" value="10">
             <br>
             <button onclick="selectImage()">Select Image</button>
         </div>
