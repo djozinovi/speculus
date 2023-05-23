@@ -43,7 +43,9 @@
             var year = document.getElementById("year").value;
             var channel = document.getElementById("channel").value;
 
+            var imagePath = "./" + channel + "/" + month + "/" + day + ".png";
             var imagePath = "./" + year + "/" + month + "/" + day + "/" + channel + ".spec.png";
+
             var image = document.getElementById("selectedImage");
             var noImageText = document.getElementById("noImageText");
             var imageInfo = document.getElementById("imageInfo");
