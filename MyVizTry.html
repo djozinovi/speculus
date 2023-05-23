@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Selector</title>
+      <style>
+        #container {
+            display: flex;
+        }
+
+        #leftPanel {
+            flex: 1;
+            padding: 20px;
+        }
+
+        #rightPanel {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        #noImageText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: red;
+            display: none;
+        }
+        
+        #imageInfo {
+            text-align: center;
+            font-weight: bold;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        var currentDate = 1;
+        var currentSubdirectory = "ILULI";
+
+        
+        function selectImage() {
+            var month = document.getElementById("month").value;
+            var date = currentDate.toString();
+            var subdirectory = currentSubdirectory;
+
+            var imagePath = subdirectory + "/" + month + "/" + date + ".png";
+            var image = document.getElementById("selectedImage");
+            var noImageText = document.getElementById("noImageText");
+            var imageInfo = document.getElementById("imageInfo");
+
+            image.src = imagePath;
+            image.onerror = function() {
+                image.style.display = "none";
+                noImageText.style.display = "block";
+            };
+
+            image.style.display = "block";
+            noImageText.style.display = "none";
+            imageInfo.innerHTML = "Station: " + subdirectory + " | Month: " + month + " | Day: " + date;
+
+            document.getElementById("date").value = currentDate;
+        }
+
+        function handleKeyPress(event) {
+            if (event.keyCode === 37) { // Left arrow key
+                currentDate = Math.max(currentDate - 1, 1); // Decrease date, minimum 1
+                selectImage();
+            } else if (event.keyCode === 39) { // Right arrow key
+                currentDate = Math.min(currentDate + 1, 31); // Increase date, maximum 31
+                selectImage();
+            } else if (event.keyCode === 38) { // Up arrow key
+                changeSubdirectory(-1); // Move to the previous subdirectory
+                selectImage();
+            } else if (event.keyCode === 40) { // Down arrow key
+                changeSubdirectory(1); // Move to the next subdirectory
+                selectImage();
+            }
+            
+        }
+
+
+        function changeSubdirectory(direction) {
+            var subdirectorySelect = document.getElementById("subdirectory");
+            var selectedIndex = subdirectorySelect.selectedIndex;
+            var newIndex = selectedIndex + direction;
+            var optionsCount = subdirectorySelect.options.length;
+
+            if (newIndex < 0) {
+                newIndex = optionsCount - 1; // Wrap to the last option
+            } else if (newIndex >= optionsCount) {
+                newIndex = 0; // Wrap to the first option
+            }
+
+            subdirectorySelect.selectedIndex = newIndex;
+            currentSubdirectory = subdirectorySelect.value;
+        }
+        
+        function setDefaultImage() {
+            selectImage(); // Select default image
+        }
+
+        document.addEventListener('keydown', handleKeyPress);
+        window.onload = setDefaultImage;
+
+    </script>
+</head>
+<body>
+  <div id="container">
+        <div id="leftPanel">
+            <label for="subdirectory">Station:</label>
+            <select id="subdirectory">
+                <option value="ILULI">ILULI</option>
+                <option value="KULLO">KULLO</option>
+                <option value="KARAT">KARAT</option>
+                <option value="NIAQ">NIAQ</option>
+                <option value="SAATT">SAATT</option>
+                <!-- Add more subdirectories here -->
+            </select>
+            <br>
+            <label for="month">Month:</label>
+            <select id="month">
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <!-- Add more months here -->
+            </select>
+            <br>
+            <label for="date">Date:</label>
+            <input type="number" id="date" min="1" max="31">
+            <br>
+            <button onclick="selectImage()">Select Image</button>
+        </div>
+        <div id="rightPanel">
+            <div id="imageInfo"></div>
+            <img id="selectedImage" src="" alt="Selected Image">
+            <div id="noImageText">No spectrogram available</div>
+        </div>
+    </div>
+
+</body>
+</html>
