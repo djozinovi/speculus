@@ -64,12 +64,10 @@
 
         function handleKeyPress(event) {
             if (event.keyCode === 37) { // Left arrow key
-		var day = Math.max( Number(document.getElementById("day").value) - 1, 1) ; // Decrease date, minimum 1
-                document.getElementById("day").value = day ;
+		update(-1);
                 selectImage();
             } else if (event.keyCode === 39) { // Right arrow key
-		var day = Math.min( Number(document.getElementById("day").value) + 1, 31) ; // Increase date, maximum 31
-                document.getElementById("day").value = day ; 
+		update(1);
                 selectImage();
             } else if (event.keyCode === 38) { // Up arrow key
                 changeChannel(-1); // Move to the previous channel
@@ -98,11 +96,16 @@
             currentChannel = channelSelect.value;
         }
         
+        function update(toadd) {
+	    document.date.setDate(document.date.getUTCDate() + toadd);
+	    document.getElementById("day").value = String(document.date.getUTCDate());
+	    document.getElementById("month").value = String(document.date.getUTCMonth() + 1);
+	    document.getElementById("year").value = String(document.date.getUTCFullYear());
+        }
+        
         function setDefaultImage() {
-	    var date = new Date()
-	    document.getElementById("day").value = date.getUTCDate().toString();
-	    document.getElementById("month").value = String(date.getUTCMonth() + 1);
-	    document.getElementById("year").value = date.getUTCFullYear().toString();
+	    document.date = new Date();
+	    update(0);
             selectImage(); // Select default image
         }
 
