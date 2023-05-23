@@ -97,6 +97,10 @@
         }
         
         function setDefaultImage() {
+	    var date = new Date()
+	    document.getElementById("day").value = date.getUTCDate().toString();
+	    document.getElementById("month").value = String(date.getUTCMonth() + 1);
+	    document.getElementById("year").value = date.getUTCFullYear().toString();
             selectImage(); // Select default image
         }
 
@@ -112,7 +116,6 @@
             <select id="channel">
                 <option value="9S.BRIZ1..EHZ">9S.BRIZ1..EHZ</option>
                 <option value="9S.BRIZ2..EHZ">9S.BRIZ2..EHZ</option>
-		<option selected="9S.BRIZ1..EHZ">9S.BRIZ1..EHZ</option>
                 <!-- Add more channels here -->
             </select>
             <br>
@@ -133,11 +136,10 @@
                 <option value="10">October</option>
                 <option value="11">November</option>
                 <option value="12">December</option>
-		<option selected="5">5</option>
             </select>
             <br>
             <label for="day">Day:</label>
-            <input type="number" id="day" min="1" max="31" value="10">
+            <input type="number" id="day" min="1" max="31">
             <br>
             <button onclick="selectImage()">Select Image</button>
         </div>
