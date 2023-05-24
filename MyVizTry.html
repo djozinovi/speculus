@@ -1,159 +1,201 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Image Selector</title>
-      <style>
-        #container {
-            display: flex;
-        }
+	<head>
+		<title>Image Selector</title>
+		<style>
 
-        #leftPanel {
-            flex: 1;
-            padding: 20px;
-        }
+body { font-family: 'Open Sans', sans-serif; }
 
-        #rightPanel {
-            flex: 1;
-            padding: 20px;
-        }
-        
-        #noImageText {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-            font-weight: bold;
-            color: red;
-            display: none;
-        }
-        
-        #imageInfo {
-            text-align: center;
-            font-weight: bold;
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
-    </style>
-    <script>
+#container {
+	display: flex;
+}
 
-        function selectImage() {
-            var day = document.getElementById("day").value;
-            var month = document.getElementById("month").value;
-            var year = document.getElementById("year").value;
-            var channel = document.getElementById("channel").value;
+    #topPanel {
+	    height: 50px;
+	    width: 100vw;
+	    background-color: white;
+	    position: fixed;
+	    z-index: 1;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+    }
 
-            var imagePath = "./" + channel + "/" + month + "/" + day + ".png";
-            var imagePath = "./" + year + "/" + month + "/" + day + "/" + channel + ".spec.png";
+    #bottomPanel {
+	    margin-top: 50px;
+	    background-color: white;
+    }
 
-            var image = document.getElementById("selectedImage");
-            var noImageText = document.getElementById("noImageText");
-            var imageInfo = document.getElementById("imageInfo");
+    #bottomPanel img {
+	    width: 100%;
+	    height: auto;
+    }
 
-            image.src = imagePath;
-            image.onerror = function() {
-                image.style.display = "none";
-                noImageText.style.display = "block";
-            };
+    #helpText {
+	    position: absolute;
+	    bottom: 0;
+	    width: 100%;
+	    text-align: center;
+	    padding: 10px;
+	    background-color: rgba(0, 0, 0, 0.7);
+	    color: white;
+	    font-size: 16px;
+    }
 
-            image.style.display = "block";
-            noImageText.style.display = "none";
-            imageInfo.innerHTML = "Station: " + channel + " | Year: " + year + " | Month: " + month + " | Day: " + day;
-            
-        }
+    body, html {
+	    height: 100%;
+	    margin: 0;
+    }
+		</style>
+		<script>
 
-        function handleKeyPress(event) {
-            if (event.keyCode === 37) { // Left arrow key
+function selectImage() {
+	var day = document.getElementById("day").value;
+	var month = document.getElementById("month").value;
+	var year = document.getElementById("year").value;
+	var channel = document.getElementById("channel").value;
+
+	var imagePath = "./" + channel + "/" + month + "/" + day + ".png";
+	var imagePath = "./" + year + "/" + month + "/" + day + "/" + channel + ".spec.png";
+
+	var image = document.getElementById("selectedImage");
+
+	image.src = imagePath;
+
+	document.date.setUTCFullYear(Number(document.getElementById("year").value))
+	document.date.setUTCMonth(Number(document.getElementById("month").value) -1)
+	document.date.setUTCDate(Number(document.getElementById("day").value))
+}
+
+function handleKeyPress(event) {
+	if (event.keyCode === 37) { // Left arrow key
 		update(-1);
-                selectImage();
-            } else if (event.keyCode === 39) { // Right arrow key
+		selectImage();
+	} else if (event.keyCode === 39) { // Right arrow key
 		update(1);
-                selectImage();
-            } else if (event.keyCode === 38) { // Up arrow key
-                changeChannel(-1); // Move to the previous channel
-                selectImage();
-            } else if (event.keyCode === 40) { // Down arrow key
-                changeChannel(1); // Move to the next channel
-                selectImage();
-            }
-            
-        }
+		selectImage();
+	} else if (event.keyCode === 38) { // Up arrow key
+		changeChannel(-1); // Move to the previous channel
+		selectImage();
+	} else if (event.keyCode === 40) { // Down arrow key
+		changeChannel(1); // Move to the next channel
+		selectImage();
+	}
+
+}
 
 
-        function changeChannel(direction) {
-            var channelSelect = document.getElementById("channel");
-            var selectedIndex = channelSelect.selectedIndex;
-            var newIndex = selectedIndex + direction;
-            var optionsCount = channelSelect.options.length;
+function changeChannel(direction) {
+	var channelSelect = document.getElementById("channel");
+	var selectedIndex = channelSelect.selectedIndex;
+	var newIndex = selectedIndex + direction;
+	var optionsCount = channelSelect.options.length;
 
-            if (newIndex < 0) {
-                newIndex = optionsCount - 1; // Wrap to the last option
-            } else if (newIndex >= optionsCount) {
-                newIndex = 0; // Wrap to the first option
-            }
+	if (newIndex < 0) {
+		newIndex = optionsCount - 1; // Wrap to the last option
+	} else if (newIndex >= optionsCount) {
+		newIndex = 0; // Wrap to the first option
+	}
 
-            channelSelect.selectedIndex = newIndex;
-            currentChannel = channelSelect.value;
-        }
-        
-        function update(toadd) {
-	    document.date.setDate(document.date.getUTCDate() + toadd);
-	    document.getElementById("day").value = String(document.date.getUTCDate());
-	    document.getElementById("month").value = String(document.date.getUTCMonth() + 1);
-	    document.getElementById("year").value = String(document.date.getUTCFullYear());
-        }
-        
-        function setDefaultImage() {
-	    document.date = new Date();
-	    update(0);
-            selectImage(); // Select default image
-        }
+	channelSelect.selectedIndex = newIndex;
+	currentChannel = channelSelect.value;
+	document.getElementById("channel").value = currentChannel
+}
 
-        document.addEventListener('keydown', handleKeyPress);
-        window.onload = setDefaultImage;
+function update(toadd) {
+	document.date.setDate(document.date.getUTCDate() + toadd);
+	document.getElementById("day").value = String(document.date.getUTCDate());
+	document.getElementById("month").value = String(document.date.getUTCMonth() + 1);
+	document.getElementById("year").value = String(document.date.getUTCFullYear());
+}
 
-    </script>
-</head>
-<body>
-  <div id="container">
-        <div id="leftPanel">
-            <label for="channel">Channel:</label>
-            <select id="channel">
-                <option value="9S.BRIZ1..EHZ">9S.BRIZ1..EHZ</option>
-                <option value="9S.BRIZ2..EHZ">9S.BRIZ2..EHZ</option>
-                <!-- Add more channels here -->
-            </select>
-            <br>
-            <label for="year">Year:</label>
-            <input type="number" id="year" min="1970" max="2070">
-            <br>
-            <label for="month">Month:</label>
-            <select id="month">
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-            <br>
-            <label for="day">Day:</label>
-            <input type="number" id="day" min="1" max="31">
-            <br>
-            <button onclick="selectImage()">Select Image</button>
-        </div>
-        <div id="rightPanel">
-            <div id="imageInfo"></div>
-            <img id="selectedImage" src="" alt="Selected Image">
-            <div id="noImageText">No spectrogram available</div>
-        </div>
-    </div>
+function setDefaultImage() {
+	document.date = new Date();
+	changeChannel(1);
+	update(0);
+	selectImage(); // Select default image
+}
 
-</body>
+var selectElement;
+var optionsArray = [];
+
+window.addEventListener('DOMContentLoaded', function() {
+	selectElement = document.getElementById('channel');
+
+	// Read the text file using fetch
+	fetch('./channels.txt')
+		.then(response => response.text())
+		.then(data => {
+			// Parse the file contents and create the optionsArray
+			optionsArray = parseTextFile(data);
+
+			// Populate the select element with options
+			optionsArray.forEach(function(option) {
+				var optionElement = document.createElement('option');
+				optionElement.value = option;
+				optionElement.textContent = option;
+				selectElement.appendChild(optionElement);
+			});
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
+});
+
+// Parse the text file contents into an array of strings
+function parseTextFile(fileContents) {
+	// Split the file contents into an array of strings using newline as the delimiter
+	var lines = fileContents.split('\n');
+
+	// Remove empty lines and trim leading/trailing whitespaces
+	var filteredLines = lines.map(function(line) {
+		return line.trim();
+	}).filter(function(line) {
+		return line !== '';
+	});
+
+	return filteredLines;
+}
+
+document.addEventListener('keydown', handleKeyPress);
+window.onload = setDefaultImage;
+
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="topPanel">
+				<label for="channel">Channel:</label>
+				<select id="channel" onchange="selectImage()" >
+					<!-- Options will be added dynamically -->
+				</select>
+				<label for="year">Year:</label>
+				<input type="number" id="year" min="1970" max="2070" onchange="selectImage()">
+				<label for="month">Month:</label>
+				<select id="month" onchange="selectImage()">
+					<option value="1">January</option>
+					<option value="2">February</option>
+					<option value="3">March</option>
+					<option value="4">April</option>
+					<option value="5">May</option>
+					<option value="6">June</option>
+					<option value="7">July</option>
+					<option value="8">August</option>
+					<option value="9">September</option>
+					<option value="10">October</option>
+					<option value="11">November</option>
+					<option value="12">December</option>
+				</select>
+				<label for="day">Day:</label>
+				<input type="number" id="day" min="1" max="31" onchange="selectImage()">
+			</div>
+			<div id="bottomPanel">
+				<img id="selectedImage" src="" alt="Selected Image">
+				<div id="helpText">
+					Keyboard shortcuts: change the channel with &#8593;&#8595; and the day with &#8592;&#8594;.
+				</div>
+			</div>
+		</div>
+
+	</body>
 </html>
