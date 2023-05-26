@@ -5,7 +5,12 @@ import numpy as np
 
 ## The code assumes the following folder structure: YEAR/NETWORK/STATION/DAY.PNG
 
-years = [f for f in os.listdir(".") if os.path.isdir(os.path.join(".", f))]
+years = [
+    f
+    for f in os.listdir(".")
+    if os.path.isdir(os.path.join(".", f))
+    if f.startswith(".") == False
+]
 
 networkFolders = []
 for year in years:
@@ -37,5 +42,3 @@ jsNetworks = "var networks = " + json.dumps(networks)
 
 with open("variables.js", "w") as outfile:
     outfile.write(jsNetworks)
-
-
