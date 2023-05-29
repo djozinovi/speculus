@@ -55,10 +55,10 @@ function selectImage() {
 
 function handleKeyPress(event) {
     if (event.keyCode === 37) { // Left arrow key
-        update(-1);
+        update(-1); // Move to the previous day
         selectImage();
     } else if (event.keyCode === 39) { // Right arrow key
-        update(1);
+        update(1); // Move to the next day
         selectImage();
     } else if (event.keyCode === 38) { // Up arrow key
         changeChannel(-1); // Move to the previous station
@@ -97,7 +97,7 @@ function update(toadd) {
 
 function setDefaultImage() {
     document.date = new Date();
-    update(0);
+    update(-1);
     fillOptions("network", networks, 'station');
     selectImage(); // Select default image
 }
